@@ -185,7 +185,7 @@ esp_err_t eWorkshopInit(void)
 
 
     ESP_LOGI(TAG, "======================================================");
-    xTaskCreate(&task_bme280, "task_bme280", 2048, NULL, 5, NULL);
+    xTaskCreate(&task_bme280, "task_bme280", 4096, NULL, 5, NULL);
 
     return res;
 }
