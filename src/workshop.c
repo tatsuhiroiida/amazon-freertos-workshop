@@ -32,6 +32,12 @@
 #include "lab_config.h"
 #include "workshop.h"
 
+#include "bme280_task.h"
+#include "freertos/FreeRTOS.h"
+#include "freertos/task.h"
+#include "esp_system.h"
+#include "esp_spi_flash.h"
+
 /* Declaration of demo functions. */
 #if defined(LABCONFIG_LAB1_AWS_IOT_BUTTON) || defined(LABCONFIG_LAB2_SHADOW)
     #include "lab1_aws_iot_button.h"
@@ -176,7 +182,10 @@ esp_err_t eWorkshopInit(void)
         ESP_LOGE(TAG, "eWorkshopInit: eDeviceInit ... failed");
     }
 
+
+
     ESP_LOGI(TAG, "======================================================");
+    xTaskCreate(&task_bme280, "task_bme280", 2048, NULL, 5, NULL);
 
     return res;
 }

@@ -29,6 +29,11 @@ get_filename_component(
     "components/afr-m5stickc-bsp" ABSOLUTE
 )
 list(APPEND IDF_EXTRA_COMPONENT_DIRS ${EXTRA_COMPONENT_DIRS})
+get_filename_component(
+    EXTRA_COMPONENT_DIRS
+    "components/bme280_driver" ABSOLUTE
+)
+list(APPEND IDF_EXTRA_COMPONENT_DIRS ${EXTRA_COMPONENT_DIRS})
 
 # As of now there's no offical way to redefine config files outside of Amazon FreeRTOS source tree.
 # This is a temporary approach to inject an include path so that this takes precedence over the
