@@ -23,10 +23,11 @@
  *          LABCONFIG_LAB0_DO_NOTHING
  *          LABCONFIG_LAB1_AWS_IOT_BUTTON
  *          LABCONFIG_LAB2_SHADOW
+ *          LABCONFIG_LABN_SENSOR
  *
  * These defines will be used throughout the workshop code. */
 
-#define LABCONFIG_LAB0_DO_NOTHING
+#define LABCONFIG_LABN_SENSOR
 
 
 /* If you want to allow WIFI provisioning to be managed by mobile apps.

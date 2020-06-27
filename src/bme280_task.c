@@ -3,10 +3,14 @@
  */
 
 #include "bme280_task.h"
+#include "message_buffer.h"
+#include <string.h>
 
 #define ACK_VAL 0x0  /*!< I2C ack value */
 #define NACK_VAL 0x1 /*!< I2C nack value */
 static char *LOG_BME = "BME280";
+
+extern MessageBufferHandle_t xMessageBuffer;
 
 /* Doesn't work if BME280_FLOAT_ENABLE is set */
 double centigrade_to_fahrenheit(uint32_t centigrade)
@@ -152,7 +156,6 @@ int8_t stream_sensor_data_forced_mode(struct bme280_dev *dev)
     abort();
   }
 
-  /* Continuously stream sensor data */
   while (1)
   {
     rslt = bme280_set_sensor_mode(BME280_FORCED_MODE, dev);
@@ -200,6 +203,11 @@ int8_t stream_sensor_data_normal_mode(struct bme280_dev *dev)
     abort();
   }
 
+  /* Continuously stream sensor data */
+  const TickType_t x100ms = pdMS_TO_TICKS(100);
+  char pcStringToSend[100];
+  size_t xBytesSent;
+
   while (1)
   {
     ESP_LOGD(LOG_BME, "HighWaterMark: %d bytes\n", uxTaskGetStackHighWaterMark(NULL));
@@ -213,6 +221,25 @@ int8_t stream_sensor_data_normal_mode(struct bme280_dev *dev)
       abort();
     }
     print_sensor_data(&comp_data);
+
+    configASSERT(xMessageBuffer != NULL);
+    snprintf(pcStringToSend, 100, "{\"temp\": %.2f, \"p\": %zu, \"hum\": %.2f}\r\n",
+             centigrade_to_fahrenheit(comp_data.temperature),
+             comp_data.pressure,
+             (float)comp_data.humidity / 1024);
+
+    xBytesSent = xMessageBufferSend(xMessageBuffer,
+                                    (void *)pcStringToSend,
+                                    strlen(pcStringToSend),
+                                    0);
+    if (xBytesSent == strlen(pcStringToSend))
+    {
+      ESP_LOGI(LOG_BME, "message sent.");
+    }
+    else
+    {
+      ESP_LOGI(LOG_BME, "no enough space. %s, %d", pcStringToSend, xBytesSent);
+    }
   }
 
   return rslt;
