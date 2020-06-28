@@ -233,18 +233,25 @@ void task_publish_sensor_data(void *ignore)
     for (;;)
     {
         xReceivedBytes = xMessageBufferReceive(xMessageBuffer,
-                                              (void *)ucRxData,
-                                              sizeof(ucRxData),
-                                              xBlockTime);
+                                               (void *)ucRxData,
+                                               sizeof(ucRxData),
+                                               xBlockTime);
 
         if (xReceivedBytes > 0)
         {
-            res = _publishMessage(pTopic, ucRxData);
- 
+            char pTopic[TOPIC_BUFFER_LENGTH] = {0};
 
-            //ESP_LOGI(TAG, "received: %s", ucRxData);
+            esp_err_t res = ESP_FAIL;
+            snprintf(pTopic, TOPIC_BUFFER_LENGTH, TOPIC_FORMAT,"M5StickC");
+            
+            res = _publishMessage(pTopic, (const char *)ucRxData);
+            if (res != ESP_OK)
+            {
+                ESP_LOGE(TAG, "Failed to publish");
+            }
         }
-        else {
+        else
+        {
             ESP_LOGE(TAG, "cannot receive. xReceivedBytes: %d", xReceivedBytes);
         }
     }

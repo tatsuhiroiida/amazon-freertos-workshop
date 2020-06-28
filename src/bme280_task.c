@@ -240,6 +240,7 @@ int8_t stream_sensor_data_normal_mode(struct bme280_dev *dev)
     {
       ESP_LOGI(LOG_BME, "no enough space. %s, %d", pcStringToSend, xBytesSent);
     }
+    user_delay_ms(10000);
   }
 
   return rslt;
