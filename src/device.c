@@ -72,6 +72,8 @@ static const char *TAG = "device";
                 TFT_print((char *)"LAB1 - AWS IOT BUTTON", CENTER, SCREEN_LINE_4);
             #elif defined(LABCONFIG_LAB2_SHADOW)
                 TFT_print((char *)"LAB2 - THING SHADOW", CENTER, SCREEN_LINE_4);
+            #elif defined(LABCONFIG_LABN_SENSOR)
+                TFT_print((char *)"LABN - SENSOR", CENTER, SCREEN_LINE_3);
             #endif
 
             TFT_drawLine(0, M5STICKC_DISPLAY_HEIGHT - 13 - 3, M5STICKC_DISPLAY_WIDTH, M5STICKC_DISPLAY_HEIGHT - 13 - 3, TFT_ORANGE);
