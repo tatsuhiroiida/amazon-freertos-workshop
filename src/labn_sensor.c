@@ -44,7 +44,7 @@
 static const char *TAG = "labn_sensor";
 
 #ifndef IOT_DEMO_MQTT_TOPIC_PREFIX
-#define IOT_DEMO_MQTT_TOPIC_PREFIX "data/mydevice"
+#define IOT_DEMO_MQTT_TOPIC_PREFIX "data/area-1"
 #endif
 /** @endcond */
 
@@ -426,6 +426,7 @@ int8_t stream_sensor_data_normal_mode(struct bme280_dev *dev) {
     }
 
     char pcStringToSend[100];
+    char pcStringToDisplay[20];
     size_t xBytesSent;
 
     while (1) {
@@ -434,6 +435,12 @@ int8_t stream_sensor_data_normal_mode(struct bme280_dev *dev) {
             ESP_LOGE(TAG, "Error getting BME280 data: %d\n", rslt);
             abort();
         }
+
+        snprintf(pcStringToDisplay, 100, "h:%5.1f, t:%5.1f",
+                 (float) comp_data.humidity,
+                 (float) comp_data.temperature);
+        TFT_print(pcStringToDisplay, CENTER, 44/*SCREEN_LINE_4*/);
+
 
         configASSERT(xMessageBuffer != NULL);
         snprintf(pcStringToSend, 100, "{\"humidity\":%5.2f, \"pressure\":%7.2f, \"temperature\":%5.2f}\r\n",
